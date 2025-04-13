@@ -1,0 +1,359 @@
+{% extends "base.html" %}
+
+{% block title %}Resume Analysis Results - Intelligent Career Up{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('resume_parser_page') }}">Resume Parser</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Results</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-4">Resume Analysis Results</h1>
+        </div>
+    </div>
+
+    <!-- Resume Score Card -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <div class="resume-score-chart">
+                                <div class="resume-score-display">
+                                    <span class="resume-score-value">{{ result.resume_score|default('85') }}</span>
+                                    <span class="resume-score-label">Score</span>
+                                </div>
+                                <svg viewBox="0 0 36 36" class="circular-chart">
+                                    <path class="circle-bg" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                    <path class="circle" stroke-dasharray="{{ result.resume_score|default('85') }}, 100" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h2 class="h4 mb-3">Resume Analysis</h2>
+                            <p class="text-muted">Our AI has analyzed your resume and assigned a score based on your skills, education, and experience.</p>
+                            
+                            <div class="resume-score-breakdown mt-4">
+                                <div class="resume-score-category">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Skills Match</span>
+                                        <span class="text-primary">{{ (result.skills|length) * 7 if (result.skills|length) <= 10 else 70 }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ (result.skills|length) * 7 if (result.skills|length) <= 10 else 70 }}%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="resume-score-category mt-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Experience Level</span>
+                                        {% set exp_percent = 70 %}
+                                        {% if result.experience is defined and result.experience %}
+                                            {% if result.experience|length >= 3 %}
+                                                {% set exp_percent = 90 %}
+                                            {% elif result.experience|length >= 2 %}
+                                                {% set exp_percent = 75 %}
+                                            {% elif result.experience|length >= 1 %}
+                                                {% set exp_percent = 60 %}
+                                            {% endif %}
+                                        {% endif %}
+                                        <span class="text-primary">{{ exp_percent }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ exp_percent }}%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="resume-score-category mt-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Education</span>
+                                        {% set edu_percent = 40 %}
+                                        {% if result.education is defined and result.education %}
+                                            {% for edu in result.education %}
+                                                {% if edu.degree is defined %}
+                                                    {% if "PhD" in edu.degree or "Ph.D" in edu.degree %}
+                                                        {% set edu_percent = 100 %}
+                                                    {% elif "Master" in edu.degree or "MS" in edu.degree or "MA" in edu.degree %}
+                                                        {% set edu_percent = 80 %}
+                                                    {% elif "Bachelor" in edu.degree or "BS" in edu.degree or "BA" in edu.degree or "B.Tech" in edu.degree %}
+                                                        {% set edu_percent = 60 %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                        <span class="text-primary">{{ edu_percent }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ edu_percent }}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Extracted Skills Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Extracted Skills</h3>
+                    <div class="skills-container">
+                        {% for skill in result.skills %}
+                            <span class="badge skill-badge">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Education and Experience Section -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card shadow-sm h-100 animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Education</h3>
+                    <div class="education-info p-3 rounded">
+                        {% if result.education and result.education|length > 0 %}
+                            {% for edu in result.education %}
+                                <div class="education-entry mb-3">
+                                    <h5 class="mb-1">{{ edu.degree }}</h5>
+                                    <p class="mb-1"><i class="fas fa-university me-2"></i>{{ edu.institution }}</p>
+                                    {% if edu.years %}
+                                        <p class="text-muted"><i class="fas fa-calendar-alt me-2"></i>{{ edu.years }}</p>
+                                    {% endif %}
+                                </div>
+                                {% if not loop.last %}<hr>{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No education information found in resume.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Experience</h3>
+                    <div class="experience-info p-3 rounded">
+                        {% if result.experience and result.experience|length > 0 %}
+                            {% for exp in result.experience %}
+                                <div class="experience-entry mb-3">
+                                    <h5 class="mb-1">{{ exp.job_role }}</h5>
+                                    {% if exp.company %}
+                                        <p class="mb-1"><i class="fas fa-building me-2"></i>{{ exp.company }}</p>
+                                    {% endif %}
+                                    {% if exp.duration %}
+                                        <p class="text-muted mb-2"><i class="fas fa-calendar-alt me-2"></i>{{ exp.duration }}</p>
+                                    {% endif %}
+                                    {% if exp.responsibilities and exp.responsibilities|length > 0 %}
+                                        <ul class="ps-3 mb-0">
+                                            {% if exp.responsibilities is string %}
+                                                <li>{{ exp.responsibilities|safe|replace('\n', ' ')|replace('\r', ' ') }}</li>
+                                            {% else %}
+                                                {% for resp in exp.responsibilities %}
+                                                    <li>{{ resp|safe|replace('\n', ' ')|replace('\r', ' ') }}</li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                                {% if not loop.last %}<hr>{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No experience information found in resume.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Next Steps Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-4">Recommended Next Steps</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ url_for('job_matcher_page') }}" class="next-step-card">
+                                <div class="next-step-icon">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <div class="next-step-content">
+                                    <h4 class="h5">Find Matching Jobs</h4>
+                                    <p class="text-muted">Discover jobs that match your skills and experience</p>
+                                </div>
+                                <div class="next-step-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{ url_for('interview_prep_page') }}" class="next-step-card">
+                                <div class="next-step-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="next-step-content">
+                                    <h4 class="h5">Practice Interviews</h4>
+                                    <p class="text-muted">Prepare for interviews with customized questions</p>
+                                </div>
+                                <div class="next-step-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .resume-score-chart {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        margin: 0 auto;
+    }
+    
+    .resume-score-display {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        width: 100%;
+    }
+    
+    .resume-score-value {
+        display: block;
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--primary-color);
+        line-height: 1;
+    }
+    
+    .resume-score-label {
+        display: block;
+        font-size: 14px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .circular-chart {
+        display: block;
+        margin: 0 auto;
+        max-width: 100%;
+        max-height: 100%;
+    }
+    
+    .circle-bg {
+        fill: none;
+        stroke: #eee;
+        stroke-width: 3.6;
+    }
+    
+    .circle {
+        fill: none;
+        stroke: var(--primary-color);
+        stroke-width: 3.6;
+        stroke-linecap: round;
+        transition: stroke-dasharray 1s ease-in-out;
+    }
+    
+    .skills-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .skill-badge {
+        background-color: #f1f8ff;
+        color: var(--primary-color);
+        border: 1px solid rgba(74, 144, 226, 0.3);
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 50px;
+    }
+    
+    .education-info,
+    .experience-info {
+        background-color: #f9f9f9;
+        line-height: 1.6;
+    }
+    
+    .education-entry h5,
+    .experience-entry h5 {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    .next-step-card {
+        display: flex;
+        align-items: center;
+        padding: 1.25rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        border: 1px solid #e5e5e5;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .next-step-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(74, 144, 226, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .next-step-icon {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(74, 144, 226, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+    
+    .next-step-content {
+        flex-grow: 1;
+    }
+    
+    .next-step-content h4 {
+        margin-bottom: 0.25rem;
+    }
+    
+    .next-step-content p {
+        margin-bottom: 0;
+    }
+    
+    .next-step-arrow {
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %} 

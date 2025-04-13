@@ -1,0 +1,45 @@
+{
+  "experience": [
+    {
+      "job_role": "e-Yantra Robotics Competition (Top 10, Semifinalist)",
+      "company": null,
+      "duration": null,
+      "responsibilities": "Worked on an autonomous warehouse drone using ROS2, contributing to navigation, computer vision, and motion control."
+    },
+    {
+      "job_role": "Firebird V Robotics Workshop & Competition (Winner & Mentor)",
+      "company": null,
+      "duration": null,
+      "responsibilities": "Gained expertise in microcontroller programming and sensor integration. Mentored students by conducting robotics workshops on Firebird V."
+    }
+  ],
+  "skills": [
+    "Python",
+    "ROS2",
+    "Problem-solving skills",
+    "Time management skills",
+    "Image processing",
+    "Path Planning",
+    "PID control",
+    "C",
+    "Embedded systems",
+    "Navigation",
+    "Computer vision",
+    "Motion control",
+    "Microcontroller programming",
+    "Sensor integration"
+  ],
+  "education": [
+    {
+      "degree": "B.Tech in Information and Communication Technology",
+      "institution": "Adani University",
+      "years": "2023-present"
+    },
+    {
+      "degree": "Science(PCM)",
+      "institution": "Anandalaya School",
+      "years": "2021-2023"
+    }
+  ],
+  "resume_score": 70
+}

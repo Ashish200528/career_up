@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Processing Resume - Intelligent Career Up{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-lg animate__animated animate__fadeIn">
+                <div class="card-body p-5">
+                    <div class="processing-container">
+                        <div class="spinner-container mb-4">
+                            <div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <h2 class="h3 mb-3">Analyzing Your Resume</h2>
+                        <p class="text-muted mb-4">Please wait while our AI analyzes your resume...</p>
+                        
+                        <div class="progress mb-4" style="height: 10px;">
+                            <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 10%"></div>
+                        </div>
+                        
+                        <div id="current-task" class="mb-4 text-muted fst-italic">Extracting text from PDF...</div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            This process may take 5-10 seconds. Please don't close this page.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBar = document.getElementById('progress-bar');
+        const currentTask = document.getElementById('current-task');
+        const tasks = [
+            "Extracting text from PDF...",
+            "Identifying skills and technologies...",
+            "Analyzing education background...",
+            "Evaluating work experience...",
+            "Calculating resume score...",
+            "Generating structured response...",
+            "Storing data in database..."
+        ];
+        
+        let progress = 10;
+        let taskIndex = 0;
+        
+        // Simulate progress for the first few seconds
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 5 + 3; // Random progress between 3-8%
+            if (progress > 95) progress = 95; // Cap at 95%
+            
+            progressBar.style.width = `${progress}%`;
+            
+            // Update task text
+            if (taskIndex < tasks.length - 1 && progress >= (taskIndex + 1) * 14) {
+                taskIndex++;
+                currentTask.textContent = tasks[taskIndex];
+            }
+        }, 700);
+        
+        // Simple direct redirect after a delay
+        setTimeout(() => {
+            // Complete the progress bar animation
+            progressBar.style.width = '100%';
+            currentTask.textContent = "Complete! Redirecting to results...";
+            
+            // Redirect to process_resume
+            setTimeout(() => {
+                window.location.href = "{{ url_for('process_resume') }}";
+                clearInterval(progressInterval);
+            }, 1000);
+        }, 5000); // Wait 5 seconds before redirecting
+    });
+</script>
+{% endblock %} 

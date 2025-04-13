@@ -1,0 +1,58 @@
+[
+  {
+    "Job Title": "Robotics Software Engineer",
+    "Company": "GrayMatter Robotics",
+    "Location": "Los Angeles, CA",
+    "Posted Date": "Posted 2 weeks ago",
+    "Short Description": "Develop and implement advanced robotics software solutions using ROS/ROS2, C++, and Python. Focus on motion planning, perception, and control systems for industrial automation."
+  },
+  {
+    "Job Title": "Software Engineer - Robotics",
+    "Company": "Virtual Incision",
+    "Location": "Lincoln, NE",
+    "Posted Date": "Posted 1 week ago",
+    "Short Description": "Contribute to the development of software for surgical robotic systems. Requires experience with C++, Python, and real-time operating systems (RTOS). Familiarity with ROS is a plus."
+  },
+  {
+    "Job Title": "Robotics Engineer (ROS)",
+    "Company": "Aerobotix",
+    "Location": "Madison, AL",
+    "Posted Date": "Posted 3 weeks ago",
+    "Short Description": "Design, develop, and test software for robotic systems, primarily using ROS/ROS2. Work on path planning, sensor integration, and system controls for aerospace automation."
+  },
+  {
+    "Job Title": "Entry Level Software Engineer - Autonomous Systems",
+    "Company": "Lockheed Martin",
+    "Location": "Littleton, CO",
+    "Posted Date": "Posted 4 days ago",
+    "Short Description": "Join a team developing software for autonomous vehicles and systems. Opportunity to work with C++, Python, simulation environments, and potentially robotics frameworks."
+  },
+  {
+    "Job Title": "Computer Vision Engineer",
+    "Company": "Miso Robotics",
+    "Location": "Pasadena, CA",
+    "Posted Date": "Posted 2 weeks ago",
+    "Short Description": "Develop and implement computer vision algorithms for robotic applications in the food industry. Requires strong Python skills and experience with CV libraries (e.g., OpenCV)."
+  },
+  {
+    "Job Title": "Robotics Software Engineer, Motion Planning",
+    "Company": "Pickle Robot",
+    "Location": "Cambridge, MA",
+    "Posted Date": "Posted 3 weeks ago",
+    "Short Description": "Focus on developing and improving motion planning algorithms for warehouse robots using C++ and Python within a ROS environment. Requires understanding of kinematics and pathfinding."
+  },
+  {
+    "Job Title": "Embedded Software Engineer - Robotics",
+    "Company": "Honeywell",
+    "Location": "Fort Mill, SC",
+    "Posted Date": "Posted 1 week ago",
+    "Short Description": "Develop embedded software for robotic systems used in warehouse automation. Requires C/C++ programming skills, experience with microcontrollers, and RTOS."
+  },
+  {
+    "Job Title": "Junior Robotics Engineer",
+    "Company": "Applied Intuition",
+    "Location": "Mountain View, CA",
+    "Posted Date": "Posted 4 weeks ago",
+    "Short Description": "Support senior engineers in developing and testing robotics software and simulation tools. Requires proficiency in Python or C++ and an interest in autonomous systems."
+  }
+]

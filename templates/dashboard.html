@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Intelligent Career Up{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<section class="welcome-section mb-5 animate-on-scroll">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 mb-3">Welcome to Your Career Dashboard</h1>
+                <p class="lead text-muted">Track your progress and access all career development tools in one place.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="profile-summary">
+                    <i class="fas fa-user-circle fa-3x text-primary"></i>
+                    <h3 class="h5 mt-2">{{ session.get('email', 'User') }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats -->
+<section class="stats-section mb-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 animate-on-scroll">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-primary bg-opacity-10">
+                                <i class="fas fa-file-alt text-primary"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="h6 mb-1">Resume Score</h3>
+                                <p class="h4 mb-0">{{ resume_score }}%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 animate-on-scroll">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-success bg-opacity-10">
+                                <i class="fas fa-briefcase text-success"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="h6 mb-1">Job Matches</h3>
+                                <p class="h4 mb-0">{{ job_matches }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 animate-on-scroll">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-info bg-opacity-10">
+                                <i class="fas fa-comments text-info"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="h6 mb-1">Interview Prep</h3>
+                                <p class="h4 mb-0">{{ interview_prep }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 animate-on-scroll">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-warning bg-opacity-10">
+                                <i class="fas fa-chart-line text-warning"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="h6 mb-1">Career Progress</h3>
+                                <p class="h4 mb-0">{{ career_progress }}%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Features -->
+<section class="features-section">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Resume Parser -->
+            <div class="col-md-6 col-lg-4 animate-on-scroll">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon-wrapper mb-4">
+                            <i class="fas fa-file-alt feature-icon"></i>
+                        </div>
+                        <h3 class="h5 mb-3">Resume Parser</h3>
+                        <p class="text-muted mb-4">Upload your resume and get instant feedback on its content and structure.</p>
+                        <a href="{{ url_for('resume_parser_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-right me-2"></i>Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job Matcher -->
+            <div class="col-md-6 col-lg-4 animate-on-scroll">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon-wrapper mb-4">
+                            <i class="fas fa-briefcase feature-icon"></i>
+                        </div>
+                        <h3 class="h5 mb-3">Job Matcher</h3>
+                        <p class="text-muted mb-4">Find the perfect job matches based on your skills and preferences.</p>
+                        <a href="{{ url_for('job_matcher_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-right me-2"></i>Find Jobs
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Career Guidance -->
+            <div class="col-md-6 col-lg-4 animate-on-scroll">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon-wrapper mb-4">
+                            <i class="fas fa-chart-line feature-icon"></i>
+                        </div>
+                        <h3 class="h5 mb-3">Career Guidance</h3>
+                        <p class="text-muted mb-4">Get personalized career advice and development recommendations.</p>
+                        <a href="{{ url_for('career_guidance_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-right me-2"></i>Get Advice
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interview Prep -->
+            <div class="col-md-6 col-lg-4 animate-on-scroll">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon-wrapper mb-4">
+                            <i class="fas fa-comments feature-icon"></i>
+                        </div>
+                        <h3 class="h5 mb-3">Interview Preparation</h3>
+                        <p class="text-muted mb-4">{{ interview_questions_count }} questions ready for practice to prepare for your interviews.</p>
+                        <a href="{{ url_for('interview_prep_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-right me-2"></i>Go
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interview Chatbot -->
+            <div class="col-md-6 col-lg-4 animate-on-scroll">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon-wrapper mb-4">
+                            <i class="fas fa-robot feature-icon"></i>
+                        </div>
+                        <h3 class="h5 mb-3">Interview Chatbot</h3>
+                        <p class="text-muted mb-4">Practice interviews with our AI-powered chatbot.</p>
+                        <a href="{{ url_for('interview_chatbot_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-right me-2"></i>Chat Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .welcome-section {
+        background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(74, 144, 226, 0.2) 100%);
+        padding: 2rem 0;
+        border-radius: 20px;
+        margin-top: 1rem;
+    }
+    
+    .profile-summary {
+        text-align: center;
+    }
+    
+    .stat-card {
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    .feature-card {
+        border: none;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        background: var(--primary-color);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+        color: white;
+    }
+    
+    .btn-outline-primary {
+        border-width: 2px;
+    }
+    
+    .btn-outline-primary:hover {
+        transform: translateX(5px);
+    }
+</style>
+{% endblock %} 

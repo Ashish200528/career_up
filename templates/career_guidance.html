@@ -1,0 +1,516 @@
+{% extends "base.html" %}
+
+{% block title %}Career Guidance - Intelligent Career Up{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Career Guidance</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-4">Career Guidance</h1>
+        </div>
+    </div>
+
+    <!-- Career Path Form -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Explore Your Career Path</h3>
+                    <p class="text-muted mb-4">Our AI Career Up analyzes your resume data and helps you plan your career transition or advancement. Enter a career path you're interested in exploring.</p>
+                    
+                    <form method="POST" action="{{ url_for('career_guidance_page') }}">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-road"></i></span>
+                                    <input type="text" class="form-control" 
+                                           id="career_path" name="career_path" 
+                                           placeholder="E.g., Data Science, Cloud Engineering, Product Management"
+                                           value="{{ previous_path }}">
+                                </div>
+                                <div class="form-text">Enter the career path you're interested in exploring</div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-compass me-2"></i>Get Career Guidance
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if guidance %}
+    <!-- Career Guidance Results -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Your Career Roadmap for {{ previous_path }}</h3>
+                    <p class="text-muted mb-4">Here's your personalized career development plan:</p>
+                    
+                    <div class="career-roadmap-container">
+                        
+                        <!-- Skill Gap Analysis -->
+                        <div class="roadmap-section">
+                            <h4><i class="fas fa-search me-2"></i>Skill Gap Analysis</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    {% if guidance.skill_gap_analysis %}
+                                        <div class="mb-3">
+                                            {% if guidance.skill_gap_analysis.summary %}
+                                                <h5 class="h6 mb-2">Analysis Summary</h5>
+                                                <p>{{ guidance.skill_gap_analysis.summary }}</p>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <h5 class="h6 mb-2">Missing Skills:</h5>
+                                            <ul class="mb-3">
+                                                {% if guidance.skill_gap_analysis is string %}
+                                                    <li>{{ guidance.skill_gap_analysis }}</li>
+                                                {% elif guidance.skill_gap_analysis is iterable and guidance.skill_gap_analysis is not mapping %}
+                                                    {% for skill in guidance.skill_gap_analysis %}
+                                                        <li>{{ skill }}</li>
+                                                    {% endfor %}
+                                                {% elif guidance.skill_gap_analysis.missing_technical_skills is defined %}
+                                                    {% for skill in guidance.skill_gap_analysis.missing_technical_skills %}
+                                                        <li>{{ skill }}</li>
+                                                    {% endfor %}
+                                                {% elif guidance.skill_gap_analysis.missing_skills is defined %}
+                                                    {% for skill in guidance.skill_gap_analysis.missing_skills %}
+                                                        <li>{{ skill }}</li>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                        
+                                        <div>
+                                            <h5 class="h6 mb-2">Existing Relevant Skills:</h5>
+                                            <ul class="mb-0">
+                                                {% if guidance.skill_gap_analysis.leverageable_skills is defined %}
+                                                    {% for skill in guidance.skill_gap_analysis.leverageable_skills %}
+                                                        <li>{{ skill }}</li>
+                                                    {% endfor %}
+                                                {% elif guidance.skill_gap_analysis.existing_relevant_skills is defined %}
+                                                    {% for skill in guidance.skill_gap_analysis.existing_relevant_skills %}
+                                                        <li>{{ skill }}</li>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted mb-0">No specific skill gaps identified.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Skill Development Plan -->
+                        <div class="roadmap-section">
+                            <h4><i class="fas fa-tasks me-2"></i>Skill Development Plan</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    {% if guidance.skill_development_plan %}
+                                        <div class="row">
+                                            {% if guidance.skill_development_plan is iterable and guidance.skill_development_plan is not string and guidance.skill_development_plan is not mapping %}
+                                                {% for plan in guidance.skill_development_plan %}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="card h-100">
+                                                            {% if plan is string %}
+                                                                <div class="card-body">
+                                                                    <p>{{ plan }}</p>
+                                                                </div>
+                                                            {% elif plan is mapping %}
+                                                                <div class="card-header bg-primary text-white">
+                                                                    <strong>{{ plan.area }}</strong>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <p>{{ plan.details }}</p>
+                                                                    {% if plan.resources %}
+                                                                    <h6>Resources:</h6>
+                                                                    <ul class="mb-0">
+                                                                        {% for resource in plan.resources %}
+                                                                            <li>{{ resource }}</li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                {% for plan in guidance.skill_development_plan %}
+                                                    <div class="col-12 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <p>{{ plan }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted mb-0">No specific skill development plan provided.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Certifications/Courses -->
+                        <div class="roadmap-section">
+                            <h4><i class="fas fa-certificate me-2"></i>Recommended Certifications & Courses</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    {% if guidance.certifications_courses %}
+                                        <div class="accordion" id="certificationsAccordion">
+                                            {% if guidance.certifications_courses is iterable and guidance.certifications_courses is not string and guidance.certifications_courses is not mapping %}
+                                                {% for cert in guidance.certifications_courses %}
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                                                            <button class="accordion-button {{ 'collapsed' if not loop.first }}" type="button" 
+                                                                data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" 
+                                                                aria-expanded="{{ 'true' if loop.first else 'false' }}" 
+                                                                aria-controls="collapse{{ loop.index }}">
+                                                                <i class="fas fa-graduation-cap me-2"></i> 
+                                                                {% if cert is mapping %}
+                                                                    {{ cert.platform if cert.platform is defined else cert.type if cert.type is defined else "Certification" }}
+                                                                {% else %}
+                                                                    Certification
+                                                                {% endif %}
+                                                            </button>
+                                                        </h2>
+                                                        <div id="collapse{{ loop.index }}" 
+                                                            class="accordion-collapse collapse {{ 'show' if loop.first }}" 
+                                                            aria-labelledby="heading{{ loop.index }}" 
+                                                            data-bs-parent="#certificationsAccordion">
+                                                            <div class="accordion-body">
+                                                                {% if cert is string %}
+                                                                    <p>{{ cert }}</p>
+                                                                {% elif cert is mapping and cert.recommendations is defined %}
+                                                                    <ul>
+                                                                        {% for rec in cert.recommendations %}
+                                                                            <li>{{ rec }}</li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                {% elif cert is mapping and cert.recommendation is defined %}
+                                                                    <p>{{ cert.recommendation }}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                {% for cert in guidance.certifications_courses %}
+                                                    <div class="col-12 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <p>{{ cert }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted mb-0">No specific certifications recommended.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Project Ideas -->
+                        <div class="roadmap-section">
+                            <h4><i class="fas fa-project-diagram me-2"></i>Suggested Project Ideas</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    {% if guidance.project_ideas %}
+                                        <div class="row">
+                                            {% if guidance.project_ideas is iterable and guidance.project_ideas is not string and guidance.project_ideas is not mapping %}
+                                                {% for project in guidance.project_ideas %}
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="card h-100">
+                                                            {% if project is string %}
+                                                                <div class="card-body">
+                                                                    <p>{{ project }}</p>
+                                                                </div>
+                                                            {% elif project is mapping %}
+                                                                <div class="card-header">
+                                                                    <strong>{{ project.name }}</strong>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <p>{{ project.description }}</p>
+                                                                    {% if project.technologies or project.skills_applied %}
+                                                                    <h6>Technologies:</h6>
+                                                                    <div class="d-flex flex-wrap">
+                                                                        {% if project.technologies is defined %}
+                                                                            {% for tech in project.technologies %}
+                                                                                <span class="badge bg-primary me-2 mb-2">{{ tech }}</span>
+                                                                            {% endfor %}
+                                                                        {% elif project.skills_applied is defined %}
+                                                                            {% for tech in project.skills_applied %}
+                                                                                <span class="badge bg-primary me-2 mb-2">{{ tech }}</span>
+                                                                            {% endfor %}
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                {% for project in guidance.project_ideas %}
+                                                    <div class="col-12 mb-3">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <p>{{ project }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <p class="text-muted mb-0">No specific project ideas provided.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Timeline -->
+                        <div class="roadmap-section">
+                            <h4><i class="fas fa-clock me-2"></i>Estimated Timeline</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    {% if guidance.estimated_timeline %}
+                                        {% if guidance.estimated_timeline is mapping %}
+                                            <div class="timeline">
+                                                {% for phase, details in guidance.estimated_timeline.items() %}
+                                                    {% if phase != "total_estimated_part_time" and phase != "accelerated_full_time" and phase != "total_estimated_time" %}
+                                                        <div class="timeline-item">
+                                                            <div class="timeline-marker">{{ loop.index }}</div>
+                                                            <div class="timeline-content">
+                                                                <h5 class="h6">{{ phase|replace('_', ' ')|title }}</h5>
+                                                                {% if details is mapping %}
+                                                                    <p><strong>{{ details.duration_months }}</strong> - {{ details.description }}</p>
+                                                                {% else %}
+                                                                    <p>{{ details }}</p>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            <div class="alert alert-info mt-3">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                <strong>Total Estimated Timeline:</strong> 
+                                                {% if guidance.estimated_timeline.total_estimated_part_time %}
+                                                    {{ guidance.estimated_timeline.total_estimated_part_time }} (part-time)
+                                                    {% if guidance.estimated_timeline.accelerated_full_time %}
+                                                        <br><strong>Accelerated Timeline:</strong> {{ guidance.estimated_timeline.accelerated_full_time }}
+                                                    {% endif %}
+                                                {% elif guidance.estimated_timeline.total_estimated_time %}
+                                                    {{ guidance.estimated_timeline.total_estimated_time }}
+                                                {% else %}
+                                                    Varies based on pace and prior experience
+                                                {% endif %}
+                                            </div>
+                                        {% else %}
+                                            <p>{{ guidance.estimated_timeline }}</p>
+                                        {% endif %}
+                                    {% else %}
+                                        <p class="text-muted mb-0">No timeline information available.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Job Readiness -->
+                        <div class="roadmap-section">
+                            <h4><i class="fas fa-check-circle me-2"></i>Job Readiness Assessment</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    {% if guidance.job_readiness_indicator %}
+                                        {% if guidance.job_readiness_indicator is mapping %}
+                                            <div class="mb-3">
+                                                <h5 class="h6">Current Level:</h5>
+                                                <div class="alert alert-primary">
+                                                    <strong>{{ guidance.job_readiness_indicator.summary if guidance.job_readiness_indicator.summary is defined else guidance.job_readiness_indicator.level if guidance.job_readiness_indicator.level is defined else guidance.job_readiness_indicator }}</strong>
+                                                </div>
+                                            </div>
+                                            {% if guidance.job_readiness_indicator.assessment is defined %}
+                                                <div class="mb-3">
+                                                    <h5 class="h6">Assessment:</h5>
+                                                    <p>{{ guidance.job_readiness_indicator.assessment }}</p>
+                                                </div>
+                                            {% endif %}
+                                            {% if guidance.job_readiness_indicator.strengths_to_leverage is defined %}
+                                                <div class="mb-3">
+                                                    <h5 class="h6">Strengths to Leverage:</h5>
+                                                    <p>{{ guidance.job_readiness_indicator.strengths_to_leverage }}</p>
+                                                </div>
+                                            {% endif %}
+                                        {% else %}
+                                            <div class="alert alert-primary">
+                                                <strong>{{ guidance.job_readiness_indicator }}</strong>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <p class="text-muted mb-0">No job readiness assessment available.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Next Steps Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-4">Next Steps in Your Career Journey</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ url_for('resume_parser_page') }}" class="next-step-card">
+                                <div class="next-step-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="next-step-content">
+                                    <h4 class="h5">Update Your Resume</h4>
+                                    <p class="text-muted">Improve your career guidance by updating your resume</p>
+                                </div>
+                                <div class="next-step-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{ url_for('job_matcher_page') }}" class="next-step-card">
+                                <div class="next-step-icon">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                                <div class="next-step-content">
+                                    <h4 class="h5">Find Matching Jobs</h4>
+                                    <p class="text-muted">Discover jobs that match your current skills</p>
+                                </div>
+                                <div class="next-step-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .roadmap-section {
+        margin-bottom: 2rem;
+    }
+    
+    .roadmap-section h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        color: var(--primary-color);
+    }
+    
+    .timeline {
+        position: relative;
+        padding-left: 50px;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 15px;
+        width: 2px;
+        background-color: var(--primary-color);
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        left: -50px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        z-index: 1;
+    }
+    
+    .timeline-content {
+        background-color: white;
+        padding: 0.5rem 0;
+    }
+    
+    .next-step-card {
+        display: flex;
+        align-items: center;
+        padding: 1.25rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        border: 1px solid #e5e5e5;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .next-step-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(74, 144, 226, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .next-step-icon {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(74, 144, 226, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+    
+    .next-step-content {
+        flex-grow: 1;
+    }
+    
+    .next-step-arrow {
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %} 

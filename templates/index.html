@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Intelligent Career Up{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center py-5 animate-on-scroll">
+    <div class="container">
+        <h1 class="display-4 mb-4 animate__animated animate__fadeInDown">
+            Your Path to Career Success
+        </h1>
+        <p class="lead mb-5 animate__animated animate__fadeInUp">
+            Discover your potential with AI-powered career guidance and personalized job matching
+        </p>
+        {% if not session.get('user_id') %}
+            <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeInUp">
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Get Started
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </a>
+            </div>
+        {% else %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg animate__animated animate__fadeInUp">
+                <i class="fas fa-arrow-right me-2"></i>Go to Dashboard
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 animate-on-scroll">Our Features</h2>
+        <div class="row g-4">
+            <!-- Resume Parser -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-alt feature-icon"></i>
+                        <h3 class="card-title h5">Resume Parser</h3>
+                        <p class="card-text">Upload your resume and get instant feedback on its content and structure.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job Matcher -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-briefcase feature-icon"></i>
+                        <h3 class="card-title h5">Job Matcher</h3>
+                        <p class="card-text">Find the perfect job matches based on your skills and preferences.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Career Guidance -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h3 class="card-title h5">Career Guidance</h3>
+                        <p class="card-text">Get personalized career advice and development recommendations.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interview Prep -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-comments feature-icon"></i>
+                        <h3 class="card-title h5">Interview Preparation</h3>
+                        <p class="card-text">Practice common interview questions and get instant feedback.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interview Chatbot -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-robot feature-icon"></i>
+                        <h3 class="card-title h5">Interview Chatbot</h3>
+                        <p class="card-text">Practice interviews with our AI-powered chatbot.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Career Analytics -->
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-bar feature-icon"></i>
+                        <h3 class="card-title h5">Career Analytics</h3>
+                        <p class="card-text">Track your career progress and get insights on your development.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 animate-on-scroll">How It Works</h2>
+        <div class="row">
+            <div class="col-md-4 text-center animate-on-scroll">
+                <div class="step-number">1</div>
+                <h3 class="h5">Create Your Account</h3>
+                <p>Sign up and complete your profile to get started.</p>
+            </div>
+            <div class="col-md-4 text-center animate-on-scroll">
+                <div class="step-number">2</div>
+                <h3 class="h5">Upload Your Resume</h3>
+                <p>Add your resume to get personalized recommendations.</p>
+            </div>
+            <div class="col-md-4 text-center animate-on-scroll">
+                <div class="step-number">3</div>
+                <h3 class="h5">Get Personalized Guidance</h3>
+                <p>Receive AI-powered career advice and job matches.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section py-5 text-center">
+    <div class="container">
+        <h2 class="mb-4 animate-on-scroll">Ready to Start Your Career Journey?</h2>
+        <p class="lead mb-4 animate-on-scroll">Join thousands of professionals who have found their dream careers with our guidance.</p>
+        {% if not session.get('user_id') %}
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg animate-on-scroll">
+                <i class="fas fa-rocket me-2"></i>Get Started Now
+            </a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(74, 144, 226, 0.2) 100%);
+        padding: 6rem 0;
+        margin-top: -2rem;
+        border-radius: 0 0 50px 50px;
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 0 auto 1rem;
+    }
+    
+    .features-section .card {
+        padding: 2rem 1rem;
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #357abd 100%);
+        color: white;
+        border-radius: 50px 50px 0 0;
+        margin-bottom: -2rem;
+    }
+    
+    .cta-section .btn-primary {
+        background: white;
+        color: var(--primary-color);
+        border: none;
+    }
+    
+    .cta-section .btn-primary:hover {
+        background: #f8f9fa;
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %} 

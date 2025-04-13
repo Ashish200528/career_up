@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Job Matcher - Intelligent Career Up{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Job Matcher</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-4">Job Matcher</h1>
+        </div>
+    </div>
+
+    <!-- Job Search Form -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Find Jobs That Match Your Skills</h3>
+                    <p class="text-muted mb-4">Our AI job matcher uses your resume data to find relevant jobs. Specify a job position to refine your search or leave it blank to find any suitable role.</p>
+                    
+                    <form method="POST" action="{{ url_for('job_matcher_page') }}">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                                    <input type="text" class="form-control" 
+                                           id="job_position" name="job_position" 
+                                           placeholder="E.g., Software Engineer, Data Analyst, Project Manager"
+                                           value="{{ previous_position }}">
+                                </div>
+                                <div class="form-text">Enter the job position you're looking for (optional)</div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-2"></i>Find Matching Jobs
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if job_matches %}
+    <!-- Job Matches Results -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Job Matches</h3>
+                    <p class="text-muted mb-4">We found {{ job_matches|length }} jobs that match your profile:</p>
+                    
+                    <div class="job-matches-container">
+                        {% for job in job_matches %}
+                        <div class="job-card">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <h4 class="job-title">{{ job.title }}</h4>
+                                    <h5 class="job-company">{{ job.company }}</h5>
+                                    <div class="job-details">
+                                        <span class="job-location"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
+                                        <span class="job-date"><i class="fas fa-calendar-alt me-1"></i>{{ job.posted_date }}</span>
+                                    </div>
+                                    <p class="job-description">{{ job.description }}</p>
+                                </div>
+                                <div class="col-md-2 text-md-end d-flex align-items-center justify-content-center">
+                                    <a href="{{ job.url }}" class="btn btn-outline-primary" target="_blank">View Job <i class="fas fa-external-link-alt ms-1"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Career Advice Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-4">Next Steps for Your Job Search</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ url_for('resume_parser_page') }}" class="next-step-card">
+                                <div class="next-step-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="next-step-content">
+                                    <h4 class="h5">Update Your Resume</h4>
+                                    <p class="text-muted">Improve your job matches by updating your resume</p>
+                                </div>
+                                <div class="next-step-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{{ url_for('interview_prep_page') }}" class="next-step-card">
+                                <div class="next-step-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="next-step-content">
+                                    <h4 class="h5">Prepare for Interviews</h4>
+                                    <p class="text-muted">Practice with interview questions for your target roles</p>
+                                </div>
+                                <div class="next-step-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .job-card {
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        transition: all 0.3s ease;
+    }
+    
+    .job-card:hover {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+        border-color: var(--primary-color);
+    }
+    
+    .job-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.25rem;
+    }
+    
+    .job-company {
+        font-size: 1rem;
+        color: #444;
+        margin-bottom: 0.5rem;
+    }
+    
+    .job-details {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .job-description {
+        font-size: 0.95rem;
+        color: #555;
+        margin-bottom: 0;
+    }
+    
+    .next-step-card {
+        display: flex;
+        align-items: center;
+        padding: 1.25rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        border: 1px solid #e5e5e5;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .next-step-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(74, 144, 226, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .next-step-icon {
+        width: 50px;
+        height: 50px;
+        background-color: rgba(74, 144, 226, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+    
+    .next-step-content {
+        flex-grow: 1;
+    }
+    
+    .next-step-arrow {
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update match score charts
+        document.querySelectorAll('.match-score-chart').forEach(function(chart) {
+            const score = chart.getAttribute('data-score');
+            chart.style.background = `conic-gradient(var(--primary-color) 0% ${score}%, #eee ${score}% 100%)`;
+        });
+    });
+</script>
+{% endblock %} 

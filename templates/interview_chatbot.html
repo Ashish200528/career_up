@@ -1,0 +1,497 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Simulation - Intelligent Career Up{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('interview_prep_page') }}">Interview Preparation</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Interview Simulation</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-4">AI Interview Simulation</h1>
+        </div>
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h4 mb-0">Interview Chatbot</h3>
+                        <div>
+                            <button id="reset-chat" class="btn btn-outline-secondary btn-sm me-2">
+                                <i class="fas fa-redo-alt me-1"></i>Restart
+                            </button>
+                            <button id="end-interview" class="btn btn-primary btn-sm">
+                                <i class="fas fa-check-circle me-1"></i>End Interview
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>How it works:</strong> Our AI interviewer will ask you questions based on your resume and job role. Type "let's end the interview" or click the "End Interview" button when you're ready to receive feedback.
+                    </div>
+                    
+                    <div id="chat-container" class="chat-container">
+                        <div id="chat-messages" class="chat-messages">
+                            <!-- Messages will be displayed here -->
+                            <div class="message interviewer">
+                                <div class="message-avatar">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-sender">AI Interviewer</div>
+                                    <div class="message-text">Hello! I'll be conducting your interview today for the {{ job_role }} position. Let's start by having you tell me a bit about yourself and your background.</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-input">
+                            <form id="chat-form" class="d-flex">
+                                <textarea id="user-input" class="form-control me-2" placeholder="Type your response here..." rows="2"></textarea>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Interview Tips -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Interview Tips</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="tip-card">
+                                <div class="tip-icon">
+                                    <i class="fas fa-stopwatch"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4 class="h5 mb-2">Keep Answers Concise</h4>
+                                    <p>Aim for 1-2 minute responses. Be clear and specific without rambling.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="tip-card">
+                                <div class="tip-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4 class="h5 mb-2">Highlight Achievements</h4>
+                                    <p>Use specific examples and quantify your accomplishments when possible.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedback-modal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">Interview Feedback</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="feedback-content">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Analyzing your interview performance...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{{ url_for('interview_prep_page') }}" class="btn btn-primary">Back to Questions</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .chat-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: #f9f9f9;
+    }
+    
+    .chat-input {
+        padding: 1rem;
+        background-color: #fff;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .message {
+        display: flex;
+        margin-bottom: 1rem;
+        max-width: 85%;
+    }
+    
+    .message.user {
+        margin-left: auto;
+        flex-direction: row-reverse;
+    }
+    
+    .message-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+    }
+    
+    .message.user .message-avatar {
+        margin-right: 0;
+        margin-left: 0.75rem;
+        background-color: #28a745;
+    }
+    
+    .message-content {
+        background-color: #fff;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .message.user .message-content {
+        background-color: #e6f7ff;
+    }
+    
+    .message-sender {
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+        color: #666;
+    }
+    
+    .message-text {
+        line-height: 1.5;
+    }
+    
+    .typing-indicator {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .typing-dots {
+        display: flex;
+        align-items: center;
+    }
+    
+    .typing-dots span {
+        height: 8px;
+        width: 8px;
+        margin: 0 1px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        animation: typing 1.4s infinite ease-in-out both;
+    }
+    
+    .typing-dots span:nth-child(1) {
+        animation-delay: 0s;
+    }
+    
+    .typing-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .typing-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+        0% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        50% {
+            transform: scale(1.5);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+    }
+    
+    .tip-card {
+        display: flex;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 1.25rem;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .tip-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .tip-icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(74, 144, 226, 0.1);
+        color: var(--primary-color);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        margin-right: 1rem;
+    }
+    
+    .tip-content {
+        flex-grow: 1;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const resetChatBtn = document.getElementById('reset-chat');
+        const endInterviewBtn = document.getElementById('end-interview');
+        const feedbackModal = new bootstrap.Modal(document.getElementById('feedback-modal'));
+        
+        // Handle user message submission
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+            
+            // Add user message to chat
+            addMessage('user', userMessage);
+            
+            // Clear input field
+            userInput.value = '';
+            
+            // Check if user wants to end interview
+            if (userMessage.toLowerCase().includes("let's end") || 
+                userMessage.toLowerCase().includes("end interview") || 
+                userMessage.toLowerCase().includes("ok lets over")) {
+                handleEndInterview();
+                return;
+            }
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Send message to server
+            fetch('{{ url_for("interview_chatbot_message") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'message': userMessage
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                if (data.success) {
+                    // Add AI response to chat
+                    addMessage('interviewer', data.response);
+                } else {
+                    // Add error message
+                    addMessage('interviewer', 'Sorry, there was an error processing your response. Please try again.');
+                    console.error('Error:', data.error);
+                }
+            })
+            .catch(error => {
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Add error message
+                addMessage('interviewer', 'Sorry, there was an error connecting to the server. Please try again.');
+                console.error('Error:', error);
+            });
+        });
+        
+        // Reset chat button
+        resetChatBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to restart the interview? This will clear all messages.')) {
+                // Clear chat messages except the first one (greeting)
+                chatMessages.innerHTML = `
+                    <div class="message interviewer">
+                        <div class="message-avatar">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-sender">AI Interviewer</div>
+                            <div class="message-text">Hello! I'll be conducting your interview today for the {{ job_role }} position. Let's start by having you tell me a bit about yourself and your background.</div>
+                        </div>
+                    </div>
+                `;
+                
+                // Reset conversation on server
+                fetch('{{ url_for("interview_chatbot_reset") }}', {
+                    method: 'POST'
+                })
+                .catch(error => {
+                    console.error('Error resetting interview:', error);
+                });
+            }
+        });
+        
+        // End interview button
+        endInterviewBtn.addEventListener('click', function() {
+            handleEndInterview();
+        });
+        
+        // Add message to chat
+        function addMessage(role, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', role);
+            
+            const avatarIcon = role === 'interviewer' ? 'fas fa-user-tie' : 'fas fa-user';
+            const senderName = role === 'interviewer' ? 'AI Interviewer' : 'You';
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="${avatarIcon}"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-sender">${senderName}</div>
+                    <div class="message-text">${text}</div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            scrollChatToBottom();
+        }
+        
+        // Show typing indicator
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('message', 'interviewer', 'typing-indicator');
+            
+            typingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-sender">AI Interviewer</div>
+                    <div class="message-text">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(typingDiv);
+            scrollChatToBottom();
+        }
+        
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const typingIndicator = document.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        // Scroll chat to bottom
+        function scrollChatToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Handle end interview
+        function handleEndInterview() {
+            // Add end message if not already added
+            addMessage('user', "Let's end the interview now.");
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Send end message to server
+            fetch('{{ url_for("interview_chatbot_message") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'message': 'ok lets over'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                if (data.success) {
+                    // Add final AI message
+                    addMessage('interviewer', 'Thank you for participating in this interview. I\'ll now provide you with feedback on your performance.');
+                    
+                    // Show feedback in modal
+                    document.getElementById('feedback-content').innerHTML = data.response;
+                    feedbackModal.show();
+                } else {
+                    // Add error message
+                    addMessage('interviewer', 'Sorry, there was an error generating feedback. Please try again.');
+                    console.error('Error:', data.error);
+                }
+            })
+            .catch(error => {
+                // Remove typing indicator
+                removeTypingIndicator();
+                
+                // Add error message
+                addMessage('interviewer', 'Sorry, there was an error generating feedback. Please try again.');
+                console.error('Error:', error);
+            });
+        }
+    });
+</script>
+{% endblock %} 

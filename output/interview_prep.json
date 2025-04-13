@@ -1,0 +1,53 @@
+{
+  "interview_questions": [
+    {
+      "category": "General & Behavioral",
+      "questions": [
+        "Can you tell me more about your role and key contributions in the e-Yantra Robotics Competition where your team reached the Top 10?",
+        "You won the Firebird V Robotics Competition and also served as a mentor. How did you find the experience of teaching others while also competing?",
+        "Based on your resume, problem-solving is a key skill. Could you describe a significant challenge you faced during either the e-Yantra or Firebird V projects and how you tackled it?",
+        "How do you approach managing your time between demanding projects like robotics competitions and your B.Tech studies?",
+        "Can you give an example of how you applied your communication skills when working on the autonomous warehouse drone project?"
+      ]
+    },
+    {
+      "category": "Technical Skills & Experience",
+      "questions": [
+        "Could you elaborate on the specific aspects of navigation, computer vision, and motion control you worked on for the autonomous warehouse drone using ROS2?",
+        "What specific microcontroller programming techniques did you utilize or gain expertise in during the Firebird V workshop?",
+        "You list several technical skills like Path Planning, PID control, and Image processing. Could you pick one and describe how you applied it in a practical scenario during your projects?",
+        "What was your experience integrating different sensors for the Firebird V robot?",
+        "Can you discuss your experience with ROS2? What were some of the advantages or challenges you found using it for the e-Yantra project?",
+        "You list both Python and C. In what contexts did you use each language within your robotics projects?"
+      ]
+    },
+    {
+      "category": "Project Specific (e-Yantra & Firebird V)",
+      "questions": [
+        "What was the overall objective of the autonomous warehouse drone project in the e-Yantra competition?",
+        "What did you find most challenging about working with the Firebird V platform?",
+        "What specific responsibilities did you take on when mentoring students for the Firebird V workshops?",
+        "Reflecting on the e-Yantra competition, what would you have done differently if you could start the project again?",
+        "What was the most valuable skill or piece of knowledge you gained from the Firebird V experience?"
+      ]
+    },
+    {
+      "category": "Aspirations & Learning (Relevant to Project Manager Target)",
+      "questions": [
+        "Given your technical background, what interests you about potentially moving into a Project Manager role in the future?",
+        "While working on the e-Yantra team, how were tasks divided and coordinated? What did you learn about teamwork and project execution?",
+        "How do you think your experience in robotics competitions, dealing with deadlines and technical challenges, has prepared you for managing projects?",
+        "How do you stay updated with the latest developments in robotics and embedded systems?"
+      ]
+    },
+    {
+      "category": "Communication & Explanation (Relevant for Journalism/Podcasting Interviews)",
+      "questions": [
+        "Could you explain the concept of 'autonomous navigation' for a drone in simple terms, as if explaining it to someone unfamiliar with robotics?",
+        "What's the most exciting potential application you see for the kind of technology you worked on in the e-Yantra competition?",
+        "How would you describe the experience of competing in a high-level robotics competition like e-Yantra?",
+        "Can you tell a brief story about a particularly memorable moment \u2013 success or failure \u2013 from your work on the Firebird V robot?"
+      ]
+    }
+  ]
+}

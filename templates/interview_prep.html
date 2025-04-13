@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Interview Preparation - Intelligent Career Up{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Interview Preparation</li>
+                </ol>
+            </nav>
+            <h1 class="h2 mb-4">Interview Preparation</h1>
+        </div>
+    </div>
+
+    <!-- Job Role Selection Form -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Select Job Role</h3>
+                    <p class="text-muted mb-4">Enter the job role you want to interview for, and we'll generate customized interview questions based on your resume.</p>
+                    
+                    <form method="POST" action="{{ url_for('interview_prep_page') }}">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                                    <input type="text" class="form-control" 
+                                           id="job_role" name="job_role" 
+                                           placeholder="E.g., Software Engineer, Data Scientist, Product Manager"
+                                           value="{{ previous_job_role }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-sync-alt me-2"></i>Generate Questions
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if questions %}
+    <!-- Interview Questions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="h4 mb-0">Interview Questions</h3>
+                        <a href="{{ url_for('interview_chatbot_page') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-comments me-2"></i>Start Interview Simulation
+                        </a>
+                    </div>
+                    
+                    <div class="accordion" id="interviewQuestionsAccordion">
+                        {% for category in questions.interview_questions %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                                    <button class="accordion-button {{ 'collapsed' if not loop.first }}" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" 
+                                            aria-expanded="{{ 'true' if loop.first else 'false' }}" 
+                                            aria-controls="collapse{{ loop.index }}">
+                                        <i class="fas fa-folder me-2"></i>{{ category.category }}
+                                    </button>
+                                </h2>
+                                <div id="collapse{{ loop.index }}" 
+                                     class="accordion-collapse collapse {{ 'show' if loop.first }}" 
+                                     aria-labelledby="heading{{ loop.index }}" 
+                                     data-bs-parent="#interviewQuestionsAccordion">
+                                    <div class="accordion-body">
+                                        <ol class="question-list">
+                                            {% for question in category.questions %}
+                                                <li class="question-item mb-3">
+                                                    <div class="question-text">{{ question }}</div>
+                                                </li>
+                                            {% endfor %}
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- No Questions Yet -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4 text-center">
+                    <i class="fas fa-question-circle fa-4x text-muted mb-3"></i>
+                    <h3 class="h4 mb-3">No Interview Questions Generated Yet</h3>
+                    <p class="text-muted mb-4">Enter a job role above to generate customized interview questions based on your resume.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Interview Tips -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm animate-on-scroll">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Interview Tips</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="tip-card">
+                                <div class="tip-icon">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4 class="h5 mb-2">Prepare Examples</h4>
+                                    <p>Use the STAR method (Situation, Task, Action, Result) to structure your answers with concrete examples from your experience.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="tip-card">
+                                <div class="tip-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4 class="h5 mb-2">Research the Company</h4>
+                                    <p>Learn about the company's mission, values, products, and recent news to demonstrate your interest and alignment.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="tip-card">
+                                <div class="tip-icon">
+                                    <i class="fas fa-comment-dots"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4 class="h5 mb-2">Practice Out Loud</h4>
+                                    <p>Rehearse your answers out loud to improve your delivery and build confidence before the actual interview.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="tip-card">
+                                <div class="tip-icon">
+                                    <i class="fas fa-question"></i>
+                                </div>
+                                <div class="tip-content">
+                                    <h4 class="h5 mb-2">Prepare Questions</h4>
+                                    <p>Have thoughtful questions ready to ask the interviewer about the role, team, and growth opportunities.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .question-list {
+        padding-left: 1.5rem;
+    }
+    
+    .question-item {
+        margin-bottom: 1rem;
+    }
+    
+    .question-text {
+        font-weight: 500;
+    }
+    
+    .tip-card {
+        display: flex;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 1.25rem;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .tip-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .tip-icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(74, 144, 226, 0.1);
+        color: var(--primary-color);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        margin-right: 1rem;
+    }
+    
+    .tip-content {
+        flex-grow: 1;
+    }
+</style>
+{% endblock %} 
