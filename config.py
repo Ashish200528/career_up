@@ -19,8 +19,7 @@ INTERVIEW_PREP_JSON = os.path.join(OUTPUT_DIR, 'interview_prep.json')
 CONVERSATION_JSON = os.path.join(OUTPUT_DIR, 'conversation.json')
 
 # API Keys
-# GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', 'AIzaSyBhKw15YzK6ab9Sh_lf2FBGHPY3PwDKiHA')
-GOOGLE_API_KEY = "AIzaSyBhKw15YzK6ab9Sh_lf2FBGHPY3PwDKiHA"
+GOOGLE_API_KEY = "GOOGLE_API_KEY"
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'your-api-key-here')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
 
